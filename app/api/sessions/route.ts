@@ -36,6 +36,7 @@ export async function POST(request: Request) {
         // Définir un cookie sécurisé
         response.cookies.set('token', jwt, {
             httpOnly: true,
+            //domain: 'maelg.fr',
             secure: true,
             path: '/',
             sameSite: 'lax',

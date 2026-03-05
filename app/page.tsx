@@ -18,8 +18,8 @@ export default function Home() {
         </div>
 
       <Image src={"/azimut_icon.png"} alt={"logo"} width={200} height={200} />
-      <h1>Welcome to Azimut</h1>
-      <p>The opening path to all Maël Garnier&apos;s projects</p>
+      <h1 className={"text-center"}>Welcome to Azimut</h1>
+      <p className={"text-center"}>The opening path to all Maël Garnier&apos;s projects</p>
       <div className={"flex items-center gap-2"}>
           <Button isSecondary={true} text={"Register"} onClick={() => router.push("/register")} />
           <Button text={"Login"} onClick={() => router.push("/login")} />

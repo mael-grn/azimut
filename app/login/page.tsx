@@ -1,6 +1,6 @@
 'use client';
 
-import {useEffect, useState} from "react";
+import {Suspense, useEffect, useState} from "react";
 import Input from "@/app/components/Input";
 import Button from "@/app/components/Button";
 import {useRouter} from "next/navigation";
@@ -10,9 +10,9 @@ import SessionService from "@/app/services/SessionService";
 import UserService from "@/app/services/UserService";
 import {AnimatePresence, motion} from "framer-motion";
 import AnimatedIcon, {ICONS} from "@/app/components/AnimatedIcon";
-import { useSearchParams } from 'next/navigation';
+import {useSearchParams} from 'next/navigation';
 
-export default function Login() {
+function LoginForm() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState<string | null>(null);
@@ -64,7 +64,7 @@ export default function Login() {
     }
 
     return (
-        <div className={"flex flex-col flex-1 md:justify-center min-w-full items-center gap-10"}>
+        <div className={"flex flex-col flex-1 justify-center min-w-full items-center gap-10"}>
             <h1 className={"text-center leading-loose"}>Login</h1>
             <form
                 className={"flex flex-col gap-4 items-center"}
@@ -79,7 +79,7 @@ export default function Login() {
                                 initial={{scale: 0}}
                                 animate={{scale: 1}}
                                 className={"text-foreground px-3 py-1 rounded-lg bg-red-800 flex items-center gap-2"}>
-                                <AnimatedIcon icon={ICONS.warning} small={true} />
+                                <AnimatedIcon icon={ICONS.warning} small={true}/>
                                 {error}
                             </motion.div>
                         }
@@ -90,5 +90,16 @@ export default function Login() {
                 </div>
             </form>
         </div>
+    )
+}
+
+export default function Login() {
+    return (
+        <Suspense fallback={
+            <div className={"flex items-center justify-center flex-1"}>
+                <AnimatedIcon icon={ICONS.loader} loop={true}/>
+            </div>}>
+            <LoginForm/>
+        </Suspense>
     )
 }

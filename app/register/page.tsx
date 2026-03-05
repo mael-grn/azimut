@@ -1,6 +1,6 @@
 'use client';
 
-import {useEffect, useState} from "react";
+import {Suspense, useEffect, useState} from "react";
 import Input from "@/app/components/Input";
 import Button from "@/app/components/Button";
 import {useRouter, useSearchParams} from "next/navigation";
@@ -12,7 +12,7 @@ import {InsertableUser} from "@/app/models/User";
 import {AnimatePresence, motion} from "framer-motion";
 import AnimatedIcon, {ICONS} from "@/app/components/AnimatedIcon";
 
-export default function Register() {
+function RegisterForm() {
     const [email, setEmail] = useState('');
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -71,7 +71,7 @@ export default function Register() {
     }
 
     return (
-        <div className={"flex flex-col flex-1 md:justify-center min-w-full items-center gap-10"}>
+        <div className={"flex flex-col flex-1 justify-center min-w-full items-center gap-10"}>
             <h1 className={"text-center leading-loose"}>Register</h1>
             <form
                 className={"flex flex-col gap-4 items-center"}
@@ -98,5 +98,16 @@ export default function Register() {
                 </div>
             </form>
         </div>
+    )
+}
+
+export default function Register() {
+    return (
+        <Suspense fallback={
+            <div className={"flex items-center justify-center flex-1"}>
+                <AnimatedIcon icon={ICONS.loader} loop={true}/>
+            </div>}>
+            <RegisterForm/>
+        </Suspense>
     )
 }

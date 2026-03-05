@@ -14,12 +14,7 @@ export default function LoadingIcon({small = false, dark = false} : {small?: boo
     }, []);
 
     return (
-        <motion.span
-            key={"loading-icon"}
-            initial={{ opacity: 0, transform: "scale(.5)", filter: "blur(10px)" }}
-            animate={{ opacity: 1, transform: "scale(1)", filter: "blur(0px)" }}
-            exit={{ opacity: 0, transform: "scale(.5)", filter: "blur(10px)" }}
-        >
+        <span>
             <Player
                 colorize={dark ? "#000000" : "#ffffff"}
                 size={small ? 20 : 30}
@@ -27,7 +22,7 @@ export default function LoadingIcon({small = false, dark = false} : {small?: boo
                 icon={ ICON }
                 onComplete={() => playerRef.current?.playFromBeginning()}
             />
-        </motion.span>
+        </span>
 
     )
 }

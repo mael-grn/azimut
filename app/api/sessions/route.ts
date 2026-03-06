@@ -33,6 +33,7 @@ export async function POST(request: Request) {
 
         const response = ApiUtil.getSuccessNextResponse()
 
+
         // Définir un cookie sécurisé
         response.cookies.set('token', jwt, {
             httpOnly: true,

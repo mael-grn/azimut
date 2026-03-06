@@ -58,7 +58,12 @@ export async function DELETE() {
     try {
         const response = NextResponse.json("Session deleted", {status: 200})
         // Supprimer le cookie de session
-        response.cookies.delete('token');
+        response.cookies.set('token', '', {
+            domain: 'maelg.fr',
+            path: '/',
+            maxAge: 0,
+            expires: new Date(0),
+        });
         return response;
     } catch (error) {
         return ApiUtil.handleNextErrors(error as Error);

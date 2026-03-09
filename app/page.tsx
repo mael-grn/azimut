@@ -1,28 +1,12 @@
 "use client";
 
 import Image from "next/image";
-import {useRouter, useSearchParams} from "next/navigation";
+import {useRouter} from "next/navigation";
 import Button from "@/app/components/Button";
-import UserService from "@/app/services/UserService";
-import {useEffect} from "react";
 
 export default function Home() {
     const router = useRouter();
-    const searchParams = useSearchParams();
 
-    useEffect(() => {
-        UserService.getMyUser().then((user) => {
-            if (user) {
-                if (searchParams.get("redirect")) {
-                    router.push(searchParams.get("redirect")!);
-                } else {
-                    router.push(`/users/${user.id}`);
-                }
-            }
-        }).catch(() => {
-            //user not connected
-        })
-    }, [router, searchParams]);
 
   return (
     <div className={" min-w-full flex-1 flex items-center justify-center flex-col gap-6"}>

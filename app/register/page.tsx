@@ -25,8 +25,13 @@ function RegisterForm() {
     useEffect(() => {
         UserService.getMyUser().then((user) => {
             if (user){
-                if (searchParams.get("redirect")) {
-                    router.push(searchParams.get("redirect")!);
+                const redirectUrl = searchParams.get("redirect");
+                if (redirectUrl) {
+                    if (redirectUrl.startsWith('http')) {
+                        window.location.href = redirectUrl;
+                    } else {
+                        router.push(redirectUrl);
+                    }
                 } else {
                     router.push(`/users/${user.id}`);
                 }
@@ -58,8 +63,13 @@ function RegisterForm() {
             await UserService.insertUser(newUser);
             await SessionService.createSession(newUser.email, newUser.password);
             const user = await UserService.getMyUser();
-            if (searchParams.get("redirect")) {
-                router.push(searchParams.get("redirect")!);
+            const redirectUrl = searchParams.get("redirect");
+            if (redirectUrl) {
+                if (redirectUrl.startsWith('http')) {
+                    window.location.href = redirectUrl;
+                } else {
+                    router.push(redirectUrl);
+                }
             } else {
                 router.push(`/users/${user.id}`);
             }
@@ -71,7 +81,7 @@ function RegisterForm() {
     }
 
     return (
-        <div className={"flex flex-col flex-1 justify-center min-w-full items-center gap-10"}>
+        <div className={"flex flex-col flex-1 justify-center min-w-full items-center gap-6"}>
             <h1 className={"text-center leading-loose"}>Register</h1>
             <form
                 className={"flex flex-col gap-4 items-center"}
@@ -87,7 +97,7 @@ function RegisterForm() {
                             <motion.div
                                 initial={{scale: 0}}
                                 animate={{scale: 1}}
-                                className={"text-foreground px-3 py-1 rounded-lg bg-red-800 flex items-center gap-2"}>
+                                className={"text-foreground px-3 py-1 rounded-lg bg-red-500 flex items-center gap-2"}>
                                 <AnimatedIcon icon={ICONS.warning} small={true} />
                                 {error}
                             </motion.div>

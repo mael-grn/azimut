@@ -9,8 +9,8 @@ const PoppinsFont = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Azimut - login to maelg's lab projects",
-  description: "Login to maelg's lab projects",
+  title: "Maël Garnier's Projects",
+  description: "Login to maelg's projects",
 };
 
 export default function RootLayout({

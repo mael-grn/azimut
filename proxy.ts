@@ -18,21 +18,35 @@ export async function proxy(request: NextRequest) {
 
     // On récupère le cookie 'token' pour vérifier l'authentification
     const cookieStore = await cookies()
-    const token = cookieStore.get('token')
+    const Cookietoken = cookieStore.get('token')
+    let token = ""
 
     // Si le token existe pas erreur 401
-    if (!token || !token.value || token.value.length === 0) {
-        if (request.nextUrl.pathname.startsWith('/api')) {
-            return NextResponse.json("Non autorisé", { status: 401 });
-        } else {
-            const url = request.nextUrl.clone();
-            url.pathname = '/login';
-            return NextResponse.redirect(url);
+    if (!Cookietoken || !Cookietoken.value || Cookietoken.value.length === 0) {
+
+        // Récupération du header Authorization
+        const authHeader = request.headers.get('authorization');
+
+        // Vérifier sa présence et son format
+        if (!authHeader || !authHeader.startsWith('Bearer ') || authHeader.split(' ').length !== 2) {
+            if (request.nextUrl.pathname.startsWith('/api')) {
+                return NextResponse.json("Non autorisé", { status: 401 });
+            } else {
+                const url = request.nextUrl.clone();
+                url.pathname = '/login';
+                return NextResponse.redirect(url);
+            }
         }
+
+        // Isoler le token (en retirant "Bearer ")
+        token = authHeader.split(' ')[1];
+
+    } else {
+        token = Cookietoken.value;
     }
 
     // On vérifie le token
-    const res = await TokenUtil.verifyToken(token.value);
+    const res = await TokenUtil.verifyToken(token);
 
     // Si le token est invalide ou expiré, on supprime le cookie et retourne une erreur 401
     if (!res) {
@@ -48,7 +62,7 @@ export async function proxy(request: NextRequest) {
 
     }
 
-    const id = await TokenUtil.getIdFromToken(token.value);
+    const id = await TokenUtil.getIdFromToken(token);
 
     const sql = SqlUtil.getSql();
     const [user] = await sql`

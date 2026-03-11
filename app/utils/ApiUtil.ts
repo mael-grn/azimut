@@ -13,13 +13,10 @@ export class ApiUtil {
     /**
      * Récupère l'utilisateur connecté à partir du token dans les cookies
      */
-    static async getConnectedUser() : Promise<User> {
+    static async getConnectedUser(token : string) : Promise<User> {
         'use server';
         const sql = SqlUtil.getSql();
-        const cookieStore = await cookies();
-        const token = cookieStore.get('token');
-        if (!token) throw new UserNotFoundError();
-        const userId = await TokenUtil.getIdFromToken(token.value);
+        const userId = await TokenUtil.getIdFromToken(token);
 
         // Si pas de token ou token invalide
         if (!userId) {
@@ -32,6 +29,24 @@ export class ApiUtil {
             throw new UserNotFoundError();
         }
         return result[0] as User;
+    }
+
+    static async retrieveToken(request: Request): Promise<string | null> {
+        const cookieStore = await cookies();
+        const cookieToken = cookieStore.get('token');
+        let token = "";
+        if (!cookieToken) {
+            const authHeader = request.headers.get('authorization');
+
+            // Vérifier sa présence et son format
+            if (!authHeader || !authHeader.startsWith('Bearer ') || authHeader.split(' ').length !== 2) {
+               return null;
+            }
+
+            // Isoler le token (en retirant "Bearer ")
+            token = authHeader.split(' ')[1];
+        }
+        return token || null;
     }
 
     static getSuccessNextResponse<T>(data? : T, newFieldCreated = false) {

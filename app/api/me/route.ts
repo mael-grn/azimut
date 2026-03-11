@@ -4,9 +4,13 @@ import {FieldsUtil} from "@/app/utils/FieldsUtil";
 import {PasswordUtil} from "@/app/utils/PasswordUtil";
 import {SqlUtil} from "@/app/utils/SqlUtil";
 
-export async function GET() {
+export async function GET(request: Request) {
     try {
-        const user = await ApiUtil.getConnectedUser();
+        const token = await ApiUtil.retrieveToken(request);
+        if (!token) {
+            return ApiUtil.getErrorNextResponse("Could not retrieve token", undefined, 401);
+        }
+        const user = await ApiUtil.getConnectedUser(token);
         return ApiUtil.getSuccessNextResponse<User>(user);
     } catch (e) {
         return ApiUtil.handleNextErrors(e as Error);
@@ -21,7 +25,11 @@ export async function GET() {
 export async function PUT(request: Request) {
 
     try {
-        const user = await ApiUtil.getConnectedUser();
+        const token = await ApiUtil.retrieveToken(request);
+        if (!token) {
+            return ApiUtil.getErrorNextResponse("Could not retrieve token", undefined, 401);
+        }
+        const user = await ApiUtil.getConnectedUser(token);
 
         // Récupération des données dans le body
         const insertableUser: InsertableUser = await request.json();

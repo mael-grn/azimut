@@ -32,10 +32,11 @@ export class ApiUtil {
     }
 
     static async retrieveToken(request: Request): Promise<string | null> {
+        'use server';
         const cookieStore = await cookies();
         const cookieToken = cookieStore.get('token');
         let token = "";
-        if (!cookieToken) {
+        if (!cookieToken || !cookieToken.value) {
             const authHeader = request.headers.get('authorization');
 
             // Vérifier sa présence et son format
@@ -45,6 +46,8 @@ export class ApiUtil {
 
             // Isoler le token (en retirant "Bearer ")
             token = authHeader.split(' ')[1];
+        } else {
+            token = cookieToken.value;
         }
         return token || null;
     }
